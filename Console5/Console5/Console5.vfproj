@@ -55,6 +55,10 @@
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 			<File RelativePath=".\Console5.f90"/>
+			<File RelativePath=".\GaussIntegration.f90"/>
+			<File RelativePath=".\GaussQuadrature.f90"/>
+			<File RelativePath=".\PrecisionModule.f90"/>
+			<File RelativePath=".\SpecialModule.f90"/>
 		</Filter>
 		<File RelativePath=".\ReadMe.txt"/>
 	</Files>
