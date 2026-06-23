@@ -1,4 +1,4 @@
-!=============================================================================!
+﻿!=============================================================================!
 module special_functions_mod
 
   use precision_mod
@@ -7,18 +7,95 @@ module special_functions_mod
  
   type SPECIAL_FUNCITON_TYPE
       
+  integer  ::   NUMBER_TERM = 100000
+integer  ::   NEWTON_ITERATION_NUMBER = 150
+real(8)  ::   EPS_ERROR  =  1.0E-20
+real(8)  ::   EPS_ERROR_NEWTON  =  1.0E-15
+real(8)  ::   GAMA_CONSTANT = 0.57721566490153286060651209008240D0
+real(8)  ::   STEP_SIZE = 0.00050D0   !----THIS PARAMETER IS IMPORTANT FOR THE ACCURACY----------!
   contains
   
        procedure   ::  StruveH0, StruveH1
        procedure   ::  BesselY0, BesselY1
        procedure   ::  BesselJ0, BesselJ1
+       
+       procedure  :: EXPONENT_INTEGRAL_E0_MODIFY
 
   end type  SPECIAL_FUNCITON_TYPE
   
   
 
     contains
+  subroutine EXPONENT_INTEGRAL_E0_MODIFY( THIS, X_INPUT, X_OUTPUT )
+ implicit none
+class( SPECIAL_FUNCITON_TYPE ), intent(in) :: THIS
+real(8), INTENT(in)     ::   X_INPUT
+real(8), intent( out)   ::   X_OUTPUT
+
+!-------------------LOCAL VARAIBLES-----------------------------!
+integer   ::  KK
+real(8)  :: X_INPUT_INVERSE, SUMM, TERM,ADD
+real(8)  ::  KK_REAL, KK_REALP1, KK_REAL_INVERSE,KK_REALP1_INVERSE
+
+    if (X_INPUT <= 0d0) then
+       write(*,*)  'Ei(x) implemented for x > 0 only'
+      PAUSE
+    end if
+
+ X_INPUT_INVERSE = 1.0D0/X_INPUT
+
+    !------------------------------------------------
+    ! Region 1: small/moderate x → series expansion
+    !------------------------------------------------
+    if (X_INPUT <= 40d0) then
+
+       SUMM  = 0d0
+       TERM = X_INPUT          ! term represents x^k / k!
+
+       do KK = 1, THIS%NEWTON_ITERATION_NUMBER
+           KK_REAL = real(KK)
+           KK_REALP1 = KK_REAL + 1.0D0
+           
+           KK_REAL_INVERSE = 1.0D0/KK_REAL
+           KK_REALP1_INVERSE = 1.0D0/KK_REALP1
+           
+          ADD = TERM*KK_REAL_INVERSE   ! x^k / (k*k!)
+          SUMM = SUMM + ADD
+
+        if (DABS( ADD ) < THIS%EPS_ERROR*DABS( SUMM + 1.0d0)) exit
+
+          TERM = TERM * X_INPUT *KK_REALP1_INVERSE
+       end do
+
+       X_OUTPUT = THIS%GAMA_CONSTANT + DLOG( X_INPUT ) + SUMM
+
+       X_OUTPUT = DEXP( - X_INPUT )*X_OUTPUT
+    else
+ !-----------------------------------------------------------
+  ! Compute expEi_scaled(x) = exp(-x) * Ei(x) for x > 0
+  ! using the large-x asymptotic expansion
+  !
+  ! exp(-x)Ei(x) ≈ (1/x) * sum_{m=0}^{M-1} m!/x^m
+  !
+  ! This is the safest way to handle very large x (avoids overflow).
+  !-----------------------------------------------------------
+  X_INPUT_INVERSE = 1.0d0/X_INPUT
+  TERM = 1.0d0
+  SUMM  = 1.0d0
+
+  do KK = 0, 200
+      
+     TERM = TERM * real(KK+1 ) * X_INPUT_INVERSE      ! (m+1)! / x^(m+1) relative update
+     SUMM  = SUMM + TERM
+     if (abs(TERM) <= THIS%EPS_ERROR*abs(SUMM)) exit
+     if (real(KK +2 ) > X_INPUT) exit            ! stop before divergence
+  end do
+
+  X_OUTPUT = X_INPUT_INVERSE * SUMM
  
+    end if
+    
+   end subroutine EXPONENT_INTEGRAL_E0_MODIFY
     
  SUBROUTINE BesselY0( THIS, Y_INPUT, Y_OUTPUT )
 implicit none
