@@ -104,6 +104,8 @@ contains
   
   SCALE_FACTOR = 2.0*PARA_ALPHA_INVERSE
   
+  
+  !------------------------------------CALCUALTE I1------------------------------!
   do II = 1, GAUSS_LAGUERRE%NUMBER_POINTS !---------------------NUMBER OF GUASS INTEGRAITON POINTS-----------------------------------!
       
         K_INPUT =  PARA_ALPHA_INVERSE*GAUSS_LAGUERRE%SEEDS_POINT( II )   !-------------K/ALPHA--------------!
@@ -218,10 +220,22 @@ contains
      
       F_FUNCTION_1 =  F_FUNCTION_DX(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )
   
+  case(3)  !------------DF/DY-----------------------!
+     
+      F_FUNCTION_1 =  F_FUNCTION_DY(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )
+      
       
  case(4)  !------------D^2F/DX^2-----------------------!
       F_FUNCTION_1 =  F_FUNCTION_DXDX(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )
 
+      
+ case(5)  !------------D^2F/DXDY-----------------------!
+     
+      F_FUNCTION_1 =  F_FUNCTION_DXDY(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )
+   case(6)  !------------D^2F/DX^2-----------------------!
+       
+      F_FUNCTION_1 =  F_FUNCTION_DYDY(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )
+      
  end select
  
  
@@ -322,8 +336,19 @@ contains
  FUNCTION_VALUE = - K_BAR*J1_VALUE  
  
  
- end function F_FUNCTION_DX
+  end function F_FUNCTION_DX
+  
+  
+  function  F_FUNCTION_DY( K_BAR, Y_INPUT, J0_VALUE, J1_VALUE )  RESULT(FUNCTION_VALUE)
+ real(8),INTENT( in) :: K_BAR, Y_INPUT, J0_VALUE, J1_VALUE
+ real(8) :: FUNCTION_VALUE
  
+
+ 
+ FUNCTION_VALUE = - K_BAR*J0_VALUE  
+ 
+ 
+ end function F_FUNCTION_DY 
  
    function  F_FUNCTION_DXDX(K_BAR, Y_INPUT, J0_VALUE, J1_VALUE )  RESULT(FUNCTION_VALUE)
  real(8) ,INTENT( in) :: K_BAR, Y_INPUT, J0_VALUE, J1_VALUE
@@ -338,6 +363,32 @@ contains
  
    end function F_FUNCTION_DXDX
    
+    function  F_FUNCTION_DXDY(K_BAR, Y_INPUT, J0_VALUE, J1_VALUE )  RESULT(FUNCTION_VALUE)
+ real(8) ,INTENT( in) :: K_BAR, Y_INPUT, J0_VALUE, J1_VALUE
+ real(8)  :: FUNCTION_VALUE
+ 
+ !------------REAL
+ real(8)::  KR_BAR_INVERSE
+
+
+ FUNCTION_VALUE =  K_BAR*K_BAR*J1_VALUE 
+ 
+ 
+    end function F_FUNCTION_DXDY
+   
+    
+        function  F_FUNCTION_DYDY(K_BAR, Y_INPUT, J0_VALUE, J1_VALUE )  RESULT(FUNCTION_VALUE)
+ real(8) ,INTENT( in) :: K_BAR, Y_INPUT, J0_VALUE, J1_VALUE
+ real(8)  :: FUNCTION_VALUE
+ 
+ !------------REAL
+ real(8)::  KR_BAR_INVERSE
+
+
+ FUNCTION_VALUE =  K_BAR*K_BAR*J0_VALUE 
+ 
+ 
+   end function F_FUNCTION_DYDY
    
      function  G_FUNCTION(K_BAR ) result(FUNCTION_VALUE)
  real(8), INTENT( in) :: K_BAR
