@@ -52,7 +52,7 @@
  
  X_VALUE(:) = 0.0D0
  
- X_VALUE(1) = 0.10_DP
+ X_VALUE(1) = 0.728868987
  X_VALUE(2) = 0.20_DP 
  X_VALUE(3) = 0.50_DP
  X_VALUE(4) = 1.00_DP
@@ -63,7 +63,7 @@
  X_VALUE(9) = 50.0_DP
  
  
- Y_VALUE(1) = 0.10_DP
+ Y_VALUE(1) = 1.50
  Y_VALUE(2) = 0.20_DP 
  Y_VALUE(3) = 0.50_DP
  Y_VALUE(4) = 1.00_DP

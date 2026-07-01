@@ -66,6 +66,22 @@ contains
       Ival = Ival + SCALE_FACTOR*GAUSS_LEGENDER%WEIGHTS_POINT( I )*FUNCTION_VALUE
       
       
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
     end do   !----------------------LOOP OF GAUSS INTEGRATION-------------------------------!
     
     
@@ -208,7 +224,7 @@ contains
  K0R_INPUT  = K0_BAR*R_INPUT
  
    call SPECIAL_FUNCTION%BesselJ0( K0R_INPUT, J0_VALUE_K0 )
-   call SPECIAL_FUNCTION%BesselJ0( K0R_INPUT, J1_VALUE_K0 ) 
+   call SPECIAL_FUNCTION%BesselJ1( K0R_INPUT, J1_VALUE_K0 ) 
    
    F_FUNCTION_1 = 0.0
 
@@ -276,12 +292,12 @@ contains
  KR_INPUT = K_BAR*R_INPUT
  
    call SPECIAL_FUNCTION%BesselJ0( KR_INPUT, J0_VALUE )
-   call SPECIAL_FUNCTION%BesselJ0( KR_INPUT, J1_VALUE )
+   call SPECIAL_FUNCTION%BesselJ1( KR_INPUT, J1_VALUE )
  
  K0R_INPUT  = K0_BAR*R_INPUT
  
    call SPECIAL_FUNCTION%BesselJ0( K0R_INPUT, J0_VALUE_K0 )
-   call SPECIAL_FUNCTION%BesselJ0( K0R_INPUT, J1_VALUE_K0 ) 
+   call SPECIAL_FUNCTION%BesselJ1( K0R_INPUT, J1_VALUE_K0 ) 
    
    F_FUNCTION_1 = 0.0
    F_FUNCTION_2 = 0.0
@@ -295,10 +311,22 @@ contains
      
       F_FUNCTION_1 =  F_FUNCTION_DX(K_BAR, R_INPUT, J0_VALUE, J1_VALUE )
       F_FUNCTION_2 =  F_FUNCTION_DX(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )    
+ case(3)  !------------DF/DX-----------------------!
+     
+      F_FUNCTION_1 =  F_FUNCTION_DY(K_BAR, R_INPUT, J0_VALUE, J1_VALUE )
+      F_FUNCTION_2 =  F_FUNCTION_DY(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )  
       
  case(4)  !------------D^2F/DX^2-----------------------!
       F_FUNCTION_1 =  F_FUNCTION_DXDX(K_BAR, R_INPUT, J0_VALUE, J1_VALUE )
       F_FUNCTION_2 =  F_FUNCTION_DXDX(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )    
+      
+  case(5)  !------------D^2F/DX^2-----------------------!
+      F_FUNCTION_1 =  F_FUNCTION_DXDY(K_BAR, R_INPUT, J0_VALUE, J1_VALUE )
+      F_FUNCTION_2 =  F_FUNCTION_DXDY(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )    
+  
+  case(6)  !------------D^2F/DX^2-----------------------!
+      F_FUNCTION_1 =  F_FUNCTION_DYDY(K_BAR, R_INPUT, J0_VALUE, J1_VALUE )
+      F_FUNCTION_2 =  F_FUNCTION_DYDY(K0_BAR, R_INPUT, J0_VALUE_K0, J1_VALUE_K0 )    
  end select
  
  
